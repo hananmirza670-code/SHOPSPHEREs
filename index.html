@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere - E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<link rel="stylesheet" href="style.css">
+    <!-- Navbar -->
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-bold text-2xl">S</div>
+                <h1 class="text-2xl font-bold">ShopSphere</h1>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <button onclick="showSection('home')" class="font-medium hover:text-indigo-600">Home</button>
+                <button onclick="showSection('shop')" class="font-medium hover:text-indigo-600">Shop</button>
+                <button onclick="toggleCart()" class="relative">
+                    <i class="fa-solid fa-cart-shopping text-2xl"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+                <button onclick="showAdminLogin()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-medium flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield"></i> Admin
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME / HERO -->
+    <section id="home" class="hero-bg h-screen flex items-center text-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-6xl font-bold mb-4">Summer Sale - Up to 70% OFF</h1>
+            <p class="text-2xl mb-8">Premium products at best prices</p>
+            <button onclick="showSection('shop')" class="bg-white text-black px-10 py-4 rounded-2xl text-xl font-semibold">Shop Now</button>
+        </div>
+    </section>
+
+    <!-- SHOP SECTION -->
+    <section id="shop" class="py-16 hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-10">Our Products</h2>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- CART MODAL -->
+    <div id="cart-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="bg-white rounded-3xl w-full max-w-lg mx-4">
+            <div class="p-6 border-b flex justify-between">
+                <h3 class="text-2xl font-bold">Your Cart</h3>
+                <button onclick="toggleCart()" class="text-3xl">×</button>
+            </div>
+            <div id="cart-items" class="p-6 max-h-96 overflow-auto"></div>
+            <div class="p-6 border-t">
+                <div class="flex justify-between text-xl font-bold mb-6">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-green-600 text-white py-4 rounded-2xl text-lg font-semibold">Place Order</button>
+            </div>
+        </div>
+    </div>
+
+
+
+  <!-- ADMIN LOGIN -->
+<div id="admin-login" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div class="bg-white p-10 rounded-3xl w-full max-w-md">
+        <h2 class="text-3xl font-bold mb-6 text-center">Admin Login</h2>
+        <input id="admin-pass" type="password" placeholder="Enter Password" class="w-full p-4 border rounded-2xl mb-4">
+        <button onclick="loginAdmin()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-medium">Login</button>
+        <!-- Default password hint removed -->
+    </div>
+</div>
+
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <div class="flex gap-4 mb-8">
+                <button onclick="switchAdminTab(0)" class="admin-tab px-6 py-3 rounded-2xl font-medium bg-indigo-600 text-white">Products</button>
+                <button onclick="switchAdminTab(1)" class="admin-tab px-6 py-3 rounded-2xl font-medium">Orders</button>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="admin-products" class="admin-content">
+                <div class="flex justify-between mb-6">
+                    <h2 class="text-2xl font-bold">Manage Products</h2>
+                    <button onclick="showAddProductModal()" class="bg-green-600 text-white px-6 py-3 rounded-2xl">+ Add New Product</button>
+                </div>
+                <div id="admin-product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="admin-orders" class="admin-content hidden">
+                <h2 class="text-2xl font-bold mb-6">Recent Orders</h2>
+                <div id="admin-order-list" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-md">
+            <h3 id="modal-title" class="text-2xl font-bold mb-6">Add Product</h3>
+            <input id="prod-name" type="text" placeholder="Product Name" class="w-full p-4 border rounded-2xl mb-4">
+            <input id="prod-price" type="number" placeholder="Price" class="w-full p-4 border rounded-2xl mb-4">
+            <input id="prod-image" type="text" placeholder="Image URL" class="w-full p-4 border rounded-2xl mb-6">
+            <div class="flex gap-4">
+                <button onclick="saveProduct()" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl">Save</button>
+                <button onclick="closeProductModal()" class="flex-1 border py-4 rounded-2xl">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
